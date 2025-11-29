@@ -1,12 +1,14 @@
-import { ConvexProvider, ConvexReactClient } from 'convex/react';
-import {Stack} from 'expo-router'
-
-const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
-  unsavedChangesWarning: false,
-});
+import ClerkAndConvexProvider from "@/providers/ClerkAndConvexProvider";
+import { Stack } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function RootLayout() {
   return (
-    <ConvexProvider client={convex}><Stack />;</ConvexProvider>
-  )
-}
+    <ClerkAndConvexProvider>
+      <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
+        <Stack screenOptions={{ headerShown: false }} />
+      </SafeAreaView>
+    </ClerkAndConvexProvider>
+  );
+}    
+
