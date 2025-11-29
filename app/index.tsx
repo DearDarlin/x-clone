@@ -1,9 +1,6 @@
-<<<<<<< HEAD
 import { Redirect } from "expo-router";
- 
-=======
+
 import { View, ActivityIndicator } from 'react-native';
->>>>>>> yaroslav
 
 export default function Index() {
   return (

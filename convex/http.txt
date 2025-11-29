@@ -1,7 +1,6 @@
 import { httpRouter } from "convex/server";
 import { httpAction } from "./_generated/server";
-import { Webhook } from "svix";
-import { api } from "./_generated/api";
+// import { Webhook } from "svix";
 
 const http = httpRouter();
 
@@ -27,7 +26,7 @@ http.route({
     const payload = await request.json();
     const body = JSON.stringify(payload);
 
-    const wh = new Webhook(webhookSecret);
+     const wh = new Webhook(webhookSecret);
     let evt: any;
 
     try {
@@ -69,3 +68,4 @@ http.route({
 });
 
 export default http;
+

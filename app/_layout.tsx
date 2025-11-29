@@ -5,8 +5,6 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import * as WebBrowser from 'expo-web-browser';
 import InitialLayout from '../components/InitialLayout';
 
-<<<<<<< HEAD
-=======
 WebBrowser.maybeCompleteAuthSession();
 
 const tokenCache = {
@@ -34,7 +32,6 @@ if (!publishableKey) {
   throw new Error('Missing Publishable Key');
 }
 
->>>>>>> yaroslav
 export default function RootLayout() {
   return (
     <ClerkProvider tokenCache={tokenCache} publishableKey={publishableKey}>
@@ -45,9 +42,4 @@ export default function RootLayout() {
       </ClerkLoaded>
     </ClerkProvider>
   );
-<<<<<<< HEAD
-}    
-
-=======
 }
->>>>>>> yaroslav
