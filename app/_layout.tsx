@@ -1,11 +1,18 @@
-import { ClerkProvider, ClerkLoaded } from '@clerk/clerk-expo';
+import { ClerkProvider, ClerkLoaded, useAuth } from '@clerk/clerk-expo';
+import { Slot } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
 import { Platform } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import * as WebBrowser from 'expo-web-browser';
+import { ConvexReactClient } from 'convex/react';
+import { ConvexProviderWithClerk } from 'convex/react-clerk';
 import InitialLayout from '../components/InitialLayout';
 
 WebBrowser.maybeCompleteAuthSession();
+
+const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
+  unsavedChangesWarning: false,
+});
 
 const tokenCache = {
   async getToken(key: string) {
@@ -25,6 +32,7 @@ const tokenCache = {
     }
   },
 };
+
 const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
 
 if (!publishableKey) {
@@ -35,9 +43,11 @@ export default function RootLayout() {
   return (
     <ClerkProvider tokenCache={tokenCache} publishableKey={publishableKey}>
       <ClerkLoaded>
-        <SafeAreaProvider>
-          <InitialLayout />
-        </SafeAreaProvider>
+        <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
+          <SafeAreaProvider>
+            <InitialLayout />
+          </SafeAreaProvider>
+        </ConvexProviderWithClerk>
       </ClerkLoaded>
     </ClerkProvider>
   );
