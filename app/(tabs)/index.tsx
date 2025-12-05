@@ -1,9 +1,7 @@
-import { View, Text, Button } from 'react-native';
-import { useClerk } from '@clerk/clerk-expo';
+import { View, Text } from 'react-native';
 import { authStyles } from '../../styles/auth.styles';
 
 export default function Feed() {
-    const { signOut } = useClerk();
     return (
         <View style={authStyles.container}>
             <Text style={authStyles.text}>Ти увійшов! Це головна!</Text>
