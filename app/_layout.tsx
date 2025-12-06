@@ -1,11 +1,10 @@
-import { ClerkProvider, ClerkLoaded, useAuth } from '@clerk/clerk-expo';
-import { Slot } from 'expo-router';
-import * as SecureStore from 'expo-secure-store';
-import { Platform } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import * as WebBrowser from 'expo-web-browser';
+import { ClerkLoaded, ClerkProvider, useAuth } from '@clerk/clerk-expo';
 import { ConvexReactClient } from 'convex/react';
 import { ConvexProviderWithClerk } from 'convex/react-clerk';
+import * as SecureStore from 'expo-secure-store';
+import * as WebBrowser from 'expo-web-browser';
+import { Platform } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import InitialLayout from '../components/InitialLayout';
 
 WebBrowser.maybeCompleteAuthSession();
@@ -52,3 +51,5 @@ export default function RootLayout() {
     </ClerkProvider>
   );
 }
+
+// обновлено
