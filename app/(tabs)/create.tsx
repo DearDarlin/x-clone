@@ -138,7 +138,7 @@ export default function CreateScreen() {
                                 />
                                 <TextInput
                                     style={[styles.captionInput, { maxHeight: 150 }]}
-                                    placeholder="What's happening?"
+                                    placeholder="Add a caption..."
                                     placeholderTextColor={COLORS.grey}
                                     multiline
                                     value={caption}
