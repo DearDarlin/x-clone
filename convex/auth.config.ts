@@ -3,7 +3,7 @@ import { AuthConfig } from "convex/server";
 export default {
   providers: [
     {
-      domain: "https://informed-finch-58.clerk.accounts.dev"!,
+      domain: "https://informed-finch-58.clerk.accounts.dev",
       applicationID: "convex",
     },
   ]
