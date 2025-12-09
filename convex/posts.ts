@@ -1,10 +1,37 @@
 import { v } from "convex/values";
-import { mutation } from "./_generated/server";
+import { mutation, query } from "./_generated/server"; // <--- Додали 'query'
 
+// добавлено query 
+export const get = query({
+    args: {},
+    handler: async (ctx) => {
+        const posts = await ctx.db.query("posts").order("desc").take(100);
+
+        return Promise.all(
+            posts.map(async (post) => {
+                const author = await ctx.db.get(post.userId);
+                let imageUrl = post.imageUrl;
+
+                if (post.storageId) {
+                    imageUrl = (await ctx.storage.getUrl(post.storageId)) ?? undefined;
+                }
+
+                return {
+                    ...post,
+                    author,
+                    imageUrl,
+                };
+            })
+        );
+    },
+});
+
+// генерую юрл
 export const generateUploadUrl = mutation(async (ctx) => {
     return await ctx.storage.generateUploadUrl();
 });
 
+// створюю пост
 export const createPost = mutation({
     args: {
         storageId: v.optional(v.id("_storage")),
@@ -34,6 +61,7 @@ export const createPost = mutation({
             likes: 0,
             comments: 0,
         });
+
         await ctx.db.patch(user._id, {
             posts: (user.posts || 0) + 1,
         });
