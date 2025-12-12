@@ -6,6 +6,9 @@ import * as WebBrowser from 'expo-web-browser';
 import { Platform } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import InitialLayout from '../components/InitialLayout';
+import {useFonts} from 'expo-font'
+import { useCallback } from 'react';
+import { SplashScreen } from 'expo-router';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -39,11 +42,23 @@ if (!publishableKey) {
 }
 
 export default function RootLayout() {
+  const [fontsLoaded] = useFonts({
+    'JetBrainsMono-Medium':require('../assets/images/Fonts/JetBrainsMono-Medium.ttf'),
+    'SpaceMono-Regular':require('../assets/images/Fonts/SpaceMono-Regular.ttf')
+  })
+
+  const OnLayoutRootView = useCallback(async ()=> {
+    if(fontsLoaded) await SplashScreen.hideAsync();
+  },[fontsLoaded]
+)
+
+if(!fontsLoaded) return null
+
   return (
     <ClerkProvider tokenCache={tokenCache} publishableKey={publishableKey}>
       <ClerkLoaded>
         <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
-          <SafeAreaProvider>
+          <SafeAreaProvider onLayout={OnLayoutRootView}>
             <InitialLayout />
           </SafeAreaProvider>
         </ConvexProviderWithClerk>
