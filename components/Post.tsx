@@ -1,10 +1,12 @@
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from "react-native";
 import { Image } from "expo-image";
 import { Ionicons } from "@expo/vector-icons";
 import { COLORS } from "@/constants/theme";
 import { formatDistanceToNow } from "date-fns";
 import { useState } from "react";
 import ImageViewing from "react-native-image-viewing";
+
+const { width } = Dimensions.get("window");
 
 type PostType = {
     _creationTime: number;
@@ -19,7 +21,9 @@ type PostType = {
     };
 };
 
-export default function Post({ post }: { post: PostType }) {
+
+
+export default function Post({ post }: { post: any }) {
     const [visible, setVisible] = useState(false);
 
     let timeAgo = "just now";
@@ -33,141 +37,159 @@ export default function Post({ post }: { post: PostType }) {
 
     return (
         <View style={styles.post}>
-            <Image
-                source={post.author?.image ? { uri: post.author.image } : null}
-                style={styles.avatar}
-                contentFit="cover"
-            />
+            {/* Header */}
+            <View style={styles.postHeader}>
+    <View style={styles.postHeaderLeft}>
+        <Image
+            source={post.author?.image ? { uri: post.author.image } : null}
+            style={styles.postAvatar}
+            contentFit="cover"
+        />
+        <View>
+            <Text style={styles.postUsername} numberOfLines={1}>
+                {post.author?.fullname || "Unknown User"}
+            </Text>
+            <Text style={styles.timeAgo}>{timeAgo}</Text>
+        </View>
+    </View>
 
-            <View style={styles.content}>
-                <View style={styles.header}>
-                    <Text style={styles.name} numberOfLines={1}>
-                        {post.author?.fullname || "Unknown User"}
-                    </Text>
-                    <Text style={styles.username} numberOfLines={1}>
-                        @{post.author?.username || "user"}
-                    </Text>
-                    <Text style={styles.time}>· {timeAgo}</Text>
-                </View>
+    <TouchableOpacity style={styles.moreButton} onPress={() => {}}>
+        <Ionicons
+            name="ellipsis-horizontal"
+            size={20}
+            color={COLORS.grey}
+        />
+    </TouchableOpacity>
+</View>
 
-                {post.caption && <Text style={styles.text}>{post.caption}</Text>}
-
-                {post.imageUrl && (
-                    <>
-                        <TouchableOpacity onPress={() => setVisible(true)}>
-                            <Image
-                                source={{ uri: post.imageUrl }}
-                                style={styles.postImage}
-                                contentFit="contain"
-                                transition={200}
-                                cachePolicy="memory-disk"
-                            />
-                        </TouchableOpacity>
-
-                        <ImageViewing
-                            images={[{ uri: post.imageUrl }]}
-                            imageIndex={0}
-                            visible={visible}
-                            onRequestClose={() => setVisible(false)}
-                            swipeToCloseEnabled
-                            doubleTapToZoomEnabled
+            {/* Image */}
+            {post.imageUrl && (
+                <>
+                    <TouchableOpacity onPress={() => setVisible(true)}>
+                        <Image
+                            source={{ uri: post.imageUrl }}
+                            style={styles.postImage}
+                            contentFit="cover"
                         />
-                    </>
-                )}
-
-                <View style={styles.actions}>
-                    <TouchableOpacity style={styles.actionButton}>
-                        <Ionicons name="chatbubble-outline" size={18} color={COLORS.grey} />
-                        <Text style={styles.actionText}>{post.comments ?? 0}</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.actionButton}>
-                        <Ionicons name="heart-outline" size={18} color={COLORS.grey} />
-                        <Text style={styles.actionText}>{post.likes ?? 0}</Text>
+                    <ImageViewing
+                        images={[{ uri: post.imageUrl }]}
+                        imageIndex={0}
+                        visible={visible}
+                        onRequestClose={() => setVisible(false)}
+                        swipeToCloseEnabled
+                        doubleTapToZoomEnabled
+                    />
+                </>
+            )}
+
+            {/* Actions */}
+            <View style={styles.postActions}>
+                <View style={styles.postActionsLeft}>
+
+                    <TouchableOpacity>
+                        <Ionicons name="heart-outline" size={22} color={COLORS.white} />
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.actionButton}>
-                        <Ionicons name="stats-chart-outline" size={18} color={COLORS.grey} />
+
+                    <TouchableOpacity>
+                        <Ionicons name="chatbubble-outline" size={22} color={COLORS.white} />
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.actionButton}>
-                        <Ionicons name="share-outline" size={18} color={COLORS.grey} />
+                    
+
+                    <TouchableOpacity>
+                        <Ionicons name="stats-chart-outline" size={22} color={COLORS.white} />
                     </TouchableOpacity>
                 </View>
+
+                <TouchableOpacity>
+                    <Ionicons name="share-outline" size={22} color={COLORS.white} />
+                </TouchableOpacity>
             </View>
+
+            {/* Caption */}
+            {post.caption && (
+                <View style={styles.postInfo}>
+                    <View style={styles.captionContainer}>
+                        <Text style={styles.captionUsername}>
+                            {post.author?.username || "user"}
+                        </Text>
+                        <Text style={styles.captionText}>{post.caption}</Text>
+                    </View>
+                </View>
+            )}
         </View>
     );
 }
 
-
 const styles = StyleSheet.create({
     post: {
-        flexDirection: "row",
-        paddingVertical: 12,
-        paddingHorizontal: 10,
-        borderBottomWidth: 0.5,
-        borderBottomColor: COLORS.surface,
+        marginBottom: 16,
+        backgroundColor: COLORS.background,
     },
-    avatar: {
-        width: 40,
-        height: 40,
-        borderRadius: 20,
-        marginRight: 12,
-        backgroundColor: COLORS.surface,
-    },
-    content: {
-        flex: 1,
-    },
-    header: {
+    postHeader: {
         flexDirection: "row",
         alignItems: "center",
-        marginBottom: 4,
-        flexWrap: 'wrap',
+        justifyContent: "space-between",
+        padding: 12,
     },
-    name: {
-        fontWeight: "bold",
-        color: COLORS.white,
-        marginRight: 5,
-        fontSize: 15,
+    postHeaderLeft: {
+        flexDirection: "row",
+        alignItems: "center",
     },
-    username: {
-        color: COLORS.grey,
-        marginRight: 5,
+    postAvatar: {
+        width: 32,
+        height: 32,
+        borderRadius: 16,
+        marginRight: 8,
+    },
+    postUsername: {
         fontSize: 14,
-    },
-    time: {
-        color: COLORS.grey,
-        fontSize: 14,
-    },
-    text: {
+        fontWeight: "600",
         color: COLORS.white,
-        fontSize: 15,
-        lineHeight: 20,
-        marginBottom: 10,
+    },
+    timeAgo: {
+        fontSize: 12,
+        color: COLORS.grey,
     },
     postImage: {
-        width: "100%",
-        // виходячи з шириини екрану
-        aspectRatio: 1,
-        borderRadius: 12,
-        marginTop: 6,
-        marginBottom: 10,
-        backgroundColor: COLORS.background,
-        marginLeft: -18,
+        width: width,
+        height: width,
     },
-    actions: {
+    postActions: {
         flexDirection: "row",
         justifyContent: "space-between",
-        marginTop: 4,
-        paddingRight: 10,
+        alignItems: "center",
+        paddingHorizontal: 12,
+        paddingVertical: 12,
     },
-    actionButton: {
+    postActionsLeft: {
         flexDirection: "row",
         alignItems: "center",
-        gap: 4,
+        gap: 16,
     },
-    actionText: {
-        color: COLORS.grey,
-        fontSize: 13,
+    postInfo: {
+        paddingHorizontal: 12,
     },
+    captionContainer: {
+        flexDirection: "row",
+        flexWrap: "wrap",
+        marginBottom: 6,
+    },
+    captionUsername: {
+        fontSize: 14,
+        fontWeight: "600",
+        color: COLORS.white,
+        marginRight: 6,
+    },
+    captionText: {
+        fontSize: 14,
+        color: COLORS.white,
+        flex: 1,
+    },
+    moreButton: {
+    padding: 6,
+},
 });
