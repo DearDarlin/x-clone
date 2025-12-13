@@ -6,13 +6,11 @@ import * as WebBrowser from 'expo-web-browser';
 import { Platform } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import InitialLayout from '../components/InitialLayout';
-import { useFonts } from 'expo-font';
+// import { useFonts } from 'expo-font'; // закоментував
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 
 WebBrowser.maybeCompleteAuthSession();
-
-// поки шрифт не завантажився, тримаємо заставку
 SplashScreen.preventAutoHideAsync();
 
 const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
@@ -45,20 +43,22 @@ if (!publishableKey) {
 }
 
 export default function RootLayout() {
-  // завантаження шрифтів
-  const [loaded] = useFonts({
-    'SpaceMono': require('../assets/fonts/SpaceMono-Regular.ttf'),
-    'JetBrainsMono': require('../assets/fonts/JetBrainsMono-Medium.ttf'), // Якщо у тебе є цей файл
-  });
+  // нема файлів, тому закоментував
+  // замість useFonts , просто кажемо тіпа, що все "завантажено" (loaded = true).
 
-  // нема заставки коли є шрифти
+  /* const [loaded] = useFonts({
+    'SpaceMono': require('../assets/fonts/SpaceMono-Regular.ttf'), - це би мало таке бути 
+  });
+  */
+
+  const loaded = true; //  тимчасово true, щоб додаток працював без шрифтів
+
   useEffect(() => {
     if (loaded) {
       SplashScreen.hideAsync();
     }
   }, [loaded]);
 
-  // нічро не показуємо, якщо шрифти не завантажились
   if (!loaded) {
     return null;
   }
