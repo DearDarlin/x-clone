@@ -1,7 +1,7 @@
 import { StyleSheet, Dimensions } from "react-native";
 import { COLORS } from "../constants/theme";
 const { width } = Dimensions.get("window");
-
+//Code
 export const styles = StyleSheet.create({
     // ========== КОНТЕЙНЕРИ ==========
     container: {
