@@ -1,7 +1,8 @@
-import { View, ScrollView, StyleSheet } from "react-native";
+import { View, ScrollView} from "react-native";
 import { STORIES } from "@/constants/mock-data";
 import Story from "@/components/Story";
 import { COLORS } from "@/constants/theme";
+import { styles } from '@/styles/feed.styles';
 
 export default function StoriesSection() {
     return (
@@ -9,7 +10,7 @@ export default function StoriesSection() {
             <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.scrollContent}
+                contentContainerStyle={styles.storiesContainer}
             >
                 {STORIES.map((story) => (
                     <Story key={story.id} item={story} />
@@ -19,14 +20,3 @@ export default function StoriesSection() {
     );
 }
 
-const styles = StyleSheet.create({
-    container: {
-        borderBottomWidth: 0.5,
-        borderBottomColor: COLORS.surface,
-        paddingVertical: 10,
-        marginBottom: 5,
-    },
-    scrollContent: {
-        paddingLeft: 16, // відступ зліва
-    }
-});
