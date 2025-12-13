@@ -21,6 +21,8 @@ type PostType = {
     };
 };
 
+
+
 export default function Post({ post }: { post: any }) {
     const [visible, setVisible] = useState(false);
 
