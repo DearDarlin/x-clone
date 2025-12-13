@@ -5,6 +5,8 @@ import { COLORS } from "@/constants/theme";
 import { formatDistanceToNow } from "date-fns";
 import { useState } from "react";
 import ImageViewing from "react-native-image-viewing";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
 
 const { width } = Dimensions.get("window");
 
@@ -19,12 +21,17 @@ type PostType = {
         username?: string;
         image?: string;
     };
+    isLiked?: boolean; // тип для лайка
 };
-
-
 
 export default function Post({ post }: { post: any }) {
     const [visible, setVisible] = useState(false);
+
+    const toggleLike = useMutation(api.posts.toggleLike);
+
+    const handleLike = () => {
+        toggleLike({ postId: post._id });
+    };
 
     let timeAgo = "just now";
     try {
@@ -39,28 +46,28 @@ export default function Post({ post }: { post: any }) {
         <View style={styles.post}>
             {/* Header */}
             <View style={styles.postHeader}>
-    <View style={styles.postHeaderLeft}>
-        <Image
-            source={post.author?.image ? { uri: post.author.image } : null}
-            style={styles.postAvatar}
-            contentFit="cover"
-        />
-        <View>
-            <Text style={styles.postUsername} numberOfLines={1}>
-                {post.author?.fullname || "Unknown User"}
-            </Text>
-            <Text style={styles.timeAgo}>{timeAgo}</Text>
-        </View>
-    </View>
+                <View style={styles.postHeaderLeft}>
+                    <Image
+                        source={post.author?.image ? { uri: post.author.image } : null}
+                        style={styles.postAvatar}
+                        contentFit="cover"
+                    />
+                    <View>
+                        <Text style={styles.postUsername} numberOfLines={1}>
+                            {post.author?.fullname || "Unknown User"}
+                        </Text>
+                        <Text style={styles.timeAgo}>{timeAgo}</Text>
+                    </View>
+                </View>
 
-    <TouchableOpacity style={styles.moreButton} onPress={() => {}}>
-        <Ionicons
-            name="ellipsis-horizontal"
-            size={20}
-            color={COLORS.grey}
-        />
-    </TouchableOpacity>
-</View>
+                <TouchableOpacity style={styles.moreButton} onPress={() => { }}>
+                    <Ionicons
+                        name="ellipsis-horizontal"
+                        size={20}
+                        color={COLORS.grey}
+                    />
+                </TouchableOpacity>
+            </View>
 
             {/* Image */}
             {post.imageUrl && (
@@ -88,8 +95,13 @@ export default function Post({ post }: { post: any }) {
             <View style={styles.postActions}>
                 <View style={styles.postActionsLeft}>
 
-                    <TouchableOpacity>
-                        <Ionicons name="heart-outline" size={22} color={COLORS.white} />
+                    {/* червоне серце */}
+                    <TouchableOpacity onPress={handleLike}>
+                        <Ionicons
+                            name={post.isLiked ? "heart" : "heart-outline"}
+                            size={22}
+                            color={post.isLiked ? "#ff3040" : COLORS.white}
+                        />
                     </TouchableOpacity>
 
 
@@ -97,7 +109,7 @@ export default function Post({ post }: { post: any }) {
                         <Ionicons name="chatbubble-outline" size={22} color={COLORS.white} />
                     </TouchableOpacity>
 
-                    
+
 
                     <TouchableOpacity>
                         <Ionicons name="stats-chart-outline" size={22} color={COLORS.white} />
@@ -112,6 +124,13 @@ export default function Post({ post }: { post: any }) {
             {/* Caption */}
             {post.caption && (
                 <View style={styles.postInfo}>
+                    {/* кількість лайків */}
+                    {!!post.likes && (
+                        <Text style={styles.likesText}>
+                            {post.likes} {post.likes === 1 ? "like" : "likes"}
+                        </Text>
+                    )}
+
                     <View style={styles.captionContainer}>
                         <Text style={styles.captionUsername}>
                             {post.author?.username || "user"}
@@ -173,6 +192,13 @@ const styles = StyleSheet.create({
     postInfo: {
         paddingHorizontal: 12,
     },
+    // стиль для тексту лайков
+    likesText: {
+        color: COLORS.white,
+        fontWeight: "600",
+        fontSize: 14,
+        marginBottom: 6,
+    },
     captionContainer: {
         flexDirection: "row",
         flexWrap: "wrap",
@@ -190,6 +216,6 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     moreButton: {
-    padding: 6,
-},
+        padding: 6,
+    },
 });

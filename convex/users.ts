@@ -1,7 +1,5 @@
-import { mutation } from "./_generated/server";
+import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
-
-//написати індекси які будуть в схемі для юзерів
 
 export const createUser = mutation({
   args: {
@@ -31,5 +29,18 @@ export const createUser = mutation({
       following: 0,
       posts: 0,
     });
+  },
+});
+
+// функція для отримання поточного юзера
+export const currentUser = query({
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) return null;
+
+    return await ctx.db
+      .query("users")
+      .withIndex("by_clerk_id", (q) => q.eq("clerkId", identity.subject))
+      .unique();
   },
 });
