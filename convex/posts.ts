@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server"; // додано квері
+import { mutation, query } from "./_generated/server";
 
 // добавлено query 
 export const get = query({
@@ -26,16 +26,27 @@ export const get = query({
                     imageUrl = (await ctx.storage.getUrl(post.storageId)) ?? undefined;
                 }
 
-                // перевіряємо в таблиці likes, чи є запис від цього юзера для цього поста
                 let isLiked = false;
+                let isBookmarked = false; // змінна для закладки
+
                 if (currentUser) {
+                    // перевірка лайка
                     const like = await ctx.db
                         .query("likes")
                         .withIndex("by_user_and_post", (q) =>
                             q.eq("userId", currentUser!._id).eq("postId", post._id)
                         )
                         .unique();
-                    isLiked = !!like; // якщо запис є, значить true
+                    isLiked = !!like;
+
+                    // перевірка чи пост в закладках
+                    const bookmark = await ctx.db
+                        .query("bookmarks")
+                        .withIndex("by_user_and_post", (q) =>
+                            q.eq("userId", currentUser!._id).eq("postId", post._id)
+                        )
+                        .unique();
+                    isBookmarked = !!bookmark;
                 }
 
                 return {
@@ -43,6 +54,7 @@ export const get = query({
                     author,
                     imageUrl,
                     isLiked,
+                    isBookmarked, // повертаємо статус
                 };
             })
         );
@@ -55,41 +67,6 @@ export const generateUploadUrl = mutation(async (ctx) => {
 });
 
 // створюю пост
-export const createPost = mutation({
-    args: {
-        storageId: v.optional(v.id("_storage")),
-        caption: v.string(),
-    },
-    handler: async (ctx, args) => {
-        const identity = await ctx.auth.getUserIdentity();
-        if (!identity) throw new Error("Unauthorized");
-
-        const user = await ctx.db
-            .query("users")
-            .withIndex("by_clerk_id", (q) => q.eq("clerkId", identity.subject))
-            .unique();
-
-        if (!user) throw new Error("User not found");
-
-        let imageUrl = undefined;
-        if (args.storageId) {
-            imageUrl = (await ctx.storage.getUrl(args.storageId)) ?? undefined;
-        }
-
-        await ctx.db.insert("posts", {
-            userId: user._id,
-            imageUrl: imageUrl,
-            storageId: args.storageId,
-            caption: args.caption,
-            likes: 0,
-            comments: 0,
-        });
-
-        await ctx.db.patch(user._id, {
-            posts: (user.posts || 0) + 1,
-        });
-    },
-});
 
 // мутація для лайка
 export const toggleLike = mutation({
@@ -149,5 +126,63 @@ export const toggleLike = mutation({
                 });
             }
         }
+    },
+});
+
+// видалення поста
+export const deletePost = mutation({
+    args: { postId: v.id("posts") },
+    handler: async (ctx, args) => {
+        const identity = await ctx.auth.getUserIdentity();
+        if (!identity) throw new Error("Unauthorized");
+
+        const user = await ctx.db
+            .query("users")
+            .withIndex("by_clerk_id", (q) => q.eq("clerkId", identity.subject))
+            .unique();
+
+        if (!user) throw new Error("User not found");
+
+        const post = await ctx.db.get(args.postId);
+        if (!post) throw new Error("Post not found");
+
+        // перевірка власника
+        if (post.userId !== user._id) {
+            throw new Error("Not authorized");
+        }
+
+        // видалення лайків
+        const likes = await ctx.db
+            .query("likes")
+            .withIndex("by_post", (q) => q.eq("postId", args.postId))
+            .collect();
+        for (const like of likes) await ctx.db.delete(like._id);
+
+        // видалення коментарів
+        const comments = await ctx.db
+            .query("comments")
+            .withIndex("by_post", (q) => q.eq("postId", args.postId))
+            .collect();
+        for (const comment of comments) await ctx.db.delete(comment._id);
+
+        // видалення закладок
+        const bookmarks = await ctx.db
+            .query("bookmarks")
+            .withIndex("by_post", (q) => q.eq("postId", args.postId))
+            .collect();
+        for (const bookmark of bookmarks) await ctx.db.delete(bookmark._id);
+
+        // видалення файлу зі сховища
+        if (post.storageId) {
+            await ctx.storage.delete(post.storageId);
+        }
+
+        // видалення поста
+        await ctx.db.delete(args.postId);
+
+        // зменшення лічильника постів
+        await ctx.db.patch(user._id, {
+            posts: Math.max(0, (user.posts || 0) - 1),
+        });
     },
 });
