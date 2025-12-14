@@ -44,3 +44,14 @@ export const currentUser = query({
       .unique();
   },
 });
+
+// отримати юзера по clerk id
+export const getUserByClerkId = query({
+  args: { clerkId: v.string() },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("users")
+      .withIndex("by_clerk_id", (q) => q.eq("clerkId", args.clerkId))
+      .unique();
+  },
+});
