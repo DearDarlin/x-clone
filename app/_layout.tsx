@@ -1,8 +1,11 @@
 import { ClerkLoaded, ClerkProvider, useAuth } from '@clerk/clerk-expo';
 import { ConvexReactClient } from 'convex/react';
 import { ConvexProviderWithClerk } from 'convex/react-clerk';
+import { useFonts } from 'expo-font';
+import { SplashScreen } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
 import * as WebBrowser from 'expo-web-browser';
+import { useCallback } from 'react';
 import { Platform } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import InitialLayout from '../components/InitialLayout';
@@ -39,7 +42,19 @@ if (!publishableKey) {
   throw new Error('Missing Publishable Key');
 }
 
+
 export default function RootLayout() {
+  const [fontsLoaded] = useFonts({
+    'JetBrainsMono-Medium':require('../assets/images/Fonts/JetBrainsMono-Medium.ttf'),
+    'SpaceMono-Regular':require('../assets/images/Fonts/SpaceMono-Regular.ttf')
+  })
+
+  const OnLayoutRootView = useCallback(async ()=> {
+    if(fontsLoaded) await SplashScreen.hideAsync();
+  },[fontsLoaded]
+)
+
+if(!fontsLoaded) return null
   return (
     <ClerkProvider tokenCache={tokenCache} publishableKey={publishableKey}>
       <ClerkLoaded>
@@ -52,3 +67,4 @@ export default function RootLayout() {
     </ClerkProvider>
   );
 }
+
