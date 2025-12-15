@@ -170,9 +170,6 @@ export default function Post({ post }: { post: any }) {
                         <Ionicons name="chatbubble-outline" size={22} color={COLORS.white} />
                     </TouchableOpacity>
 
-                    <TouchableOpacity>
-                        <Ionicons name="stats-chart-outline" size={22} color={COLORS.white} />
-                    </TouchableOpacity>
                 </View>
 
                 <TouchableOpacity onPress={handleBookmark}>
