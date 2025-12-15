@@ -20,10 +20,45 @@ export default function Story({ item }: { item: any }) {
 }
 
 const styles = StyleSheet.create({
-    container: { alignItems: "center", marginRight: 15, width: 70 },
-    border: { width: 68, height: 68, borderRadius: 34, borderWidth: 2, borderColor: COLORS.primary, justifyContent: "center", alignItems: "center", marginBottom: 5 },
-    noBorder: { borderWidth: 0 },
-    image: { width: 60, height: 60, borderRadius: 30, backgroundColor: COLORS.surface },
-    username: { color: COLORS.white, fontSize: 12 },
-    addIcon: { position: "absolute", bottom: 0, right: 0, backgroundColor: COLORS.primary, width: 20, height: 20, borderRadius: 10, justifyContent: "center", alignItems: "center", borderWidth: 2, borderColor: COLORS.background },
+    container: {
+        alignItems: "center",
+        marginRight: 15,
+        width: 90
+    },
+    border: {
+        width: 88,
+        height: 88,
+        borderRadius: 44,
+        borderWidth: 2,
+        borderColor: COLORS.primary,
+        justifyContent: "center",
+        alignItems: "center",
+        marginBottom: 5
+    },
+    noBorder: {
+        borderWidth: 0
+    },
+    image: {
+        width: 80,
+        height: 80,
+        borderRadius: 40,
+        backgroundColor: COLORS.surface
+    },
+    username: {
+        color: COLORS.white,
+        fontSize: 13
+    },
+    addIcon: {
+        position: "absolute",
+        bottom: 0,
+        right: 0,
+        backgroundColor: COLORS.primary,
+        width: 24,
+        height: 24,
+        borderRadius: 10,
+        justifyContent: "center",
+        alignItems: "center",
+        borderWidth: 2,
+        borderColor: COLORS.background
+    },
 });

@@ -58,5 +58,13 @@ export default defineSchema({
     })
         .index("by_user", ["userId"])
         .index("by_post", ["postId"])
-        .index("by_both", ["userId", "postId"]),
+        .index("by_user_and_post", ["userId", "postId"]),
+
+    // скарги
+    reports: defineTable({
+        userId: v.id("users"), // хто поскаржився
+        postId: v.id("posts"), // на який пост
+        reason: v.string(),    // причина (одна з 6)
+        status: v.string(),    // статус (наприклад "pending")
+    }).index("by_post", ["postId"]),
 });
