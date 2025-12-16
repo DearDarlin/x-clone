@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
+import { mutation, query } from "./_generated/server"; // додано квері
 
 // добавлено query 
 export const get = query({
@@ -26,6 +26,7 @@ export const get = query({
                     imageUrl = (await ctx.storage.getUrl(post.storageId)) ?? undefined;
                 }
 
+                // перевіряємо в таблиці likes, чи є запис від цього юзера для цього поста
                 let isLiked = false;
                 let isBookmarked = false; // змінна для закладки
 
@@ -37,7 +38,7 @@ export const get = query({
                             q.eq("userId", currentUser!._id).eq("postId", post._id)
                         )
                         .unique();
-                    isLiked = !!like;
+                    isLiked = !!like; // якщо запис є, значить true
 
                     // перевірка чи пост в закладках
                     const bookmark = await ctx.db
@@ -67,6 +68,44 @@ export const generateUploadUrl = mutation(async (ctx) => {
 });
 
 // створюю пост
+export const createPost = mutation({
+    args: {
+        storageId: v.optional(v.id("_storage")),
+        caption: v.string(),
+    },
+    handler: async (ctx, args) => {
+        const identity = await ctx.auth.getUserIdentity();
+        if (!identity) throw new Error("Unauthorized");
+
+        const user = await ctx.db
+            .query("users")
+            .withIndex("by_clerk_id", (q) => q.eq("clerkId", identity.subject))
+            .unique();
+
+        if (!user) throw new Error("User not found");
+
+        // отримання посилання на картинку
+        let imageUrl = undefined;
+        if (args.storageId) {
+            imageUrl = (await ctx.storage.getUrl(args.storageId)) ?? undefined;
+        }
+
+        // запис поста в базу
+        await ctx.db.insert("posts", {
+            userId: user._id,
+            imageUrl: imageUrl,
+            storageId: args.storageId,
+            caption: args.caption,
+            likes: 0,
+            comments: 0,
+        });
+
+        // оновлення лічильника постів
+        await ctx.db.patch(user._id, {
+            posts: (user.posts || 0) + 1,
+        });
+    },
+});
 
 // мутація для лайка
 export const toggleLike = mutation({

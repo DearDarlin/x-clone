@@ -99,6 +99,7 @@ export default function Post({ post }: { post: any }) {
                 visible={showComments}
                 onClose={() => setShowComments(false)}
                 postId={post._id}
+                postOwnerId={post.userId}
             />
 
             {/* модалка скарг */}
