@@ -7,6 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '@/constants/theme';
 import { Notification } from '@/components/Notification';
 
+
 export default function NotificationsScreen() {
   const { isAuthenticated } = useConvexAuth();
   const notifications = useQuery(api.notifications.getNotifications, isAuthenticated ? {} : 'skip');
@@ -16,13 +17,13 @@ export default function NotificationsScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      <View style={[styles.header, { marginTop: 20 }]}>
         <Text style={styles.headerTitle}>Notifications</Text>
       </View>
 
       <FlatList
         data={notifications}
-        renderItem={({ item }) => <Notification notification={item} />}
+        renderItem={({ item }) => <Notification notification={item as any} />}
         keyExtractor={(item) => item._id}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.listContainer}
@@ -35,7 +36,7 @@ function NoNotificationsFound() {
   return (
     <View style={[styles.container, styles.centered]}>
       <Ionicons name="notifications-outline" size={74} color={COLORS.primary} />
-      <Text style={{ fontSize: 20, color: COLORS.white }}>No notifications yet</Text>
+      <Text style={{ fontSize: 20, color: COLORS.white }}>Немає на даний момент сповіщень</Text>
     </View>
   );
 }
