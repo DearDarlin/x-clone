@@ -99,6 +99,7 @@ export default function Post({ post }: { post: any }) {
                 visible={showComments}
                 onClose={() => setShowComments(false)}
                 postId={post._id}
+                postOwnerId={post.userId}
             />
 
             {/* модалка скарг */}
@@ -170,9 +171,6 @@ export default function Post({ post }: { post: any }) {
                         <Ionicons name="chatbubble-outline" size={22} color={COLORS.white} />
                     </TouchableOpacity>
 
-                    <TouchableOpacity>
-                        <Ionicons name="stats-chart-outline" size={22} color={COLORS.white} />
-                    </TouchableOpacity>
                 </View>
 
                 <TouchableOpacity onPress={handleBookmark}>
@@ -213,15 +211,16 @@ export default function Post({ post }: { post: any }) {
 
 const styles = StyleSheet.create({
     post: {
-        marginBottom: 16,
-        backgroundColor: COLORS.background,
+        marginBottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0)',
+        borderBottomWidth: 0,
+        borderBottomColor: 'transparent',
     },
-    // стилі для прихованого поста
     hiddenPost: {
         padding: 20,
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: COLORS.surface,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
         marginBottom: 16,
         gap: 8,
         minHeight: 150,
@@ -265,6 +264,7 @@ const styles = StyleSheet.create({
     postImage: {
         width: width,
         height: width,
+
     },
     postActions: {
         flexDirection: "row",

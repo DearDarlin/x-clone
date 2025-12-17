@@ -1,7 +1,7 @@
-// стас, для тебе підказки по коду
-
 import { Tabs } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
+import { StyleSheet } from 'react-native';
+import { BlurView } from 'expo-blur';
 
 export default function TabLayout() {
     return (
@@ -9,18 +9,29 @@ export default function TabLayout() {
             screenOptions={{
                 headerShown: false, // приховуємо хедер
                 tabBarActiveTintColor: '#1DA1F2', // активна - блакитна
-                tabBarInactiveTintColor: '#657786', // неактивна - сіра
+                tabBarInactiveTintColor: '#b0b3b8', // трохи світліший сірий
+
+
+                tabBarBackground: () => (
+                    <BlurView
+                        intensity={80}
+                        tint="dark"
+                        style={StyleSheet.absoluteFill}
+                    />
+                ),
+
                 tabBarStyle: {
-                    backgroundColor: '#000000', // темна тема (чорний фон)
-                    borderTopWidth: 0.5,
-                    borderTopColor: '#333',
-                    height: 70,
-                    paddingBottom: 20,
+                    position: 'absolute',
+                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                    borderTopWidth: 0,
+                    elevation: 0,
+                    height: 80,
+                    paddingTop: 10,
                 },
-                tabBarShowLabel: false, // прибираємо підписи
+                tabBarShowLabel: false,
             }}>
 
-            {/* 1. Головна */}
+            {/* головна */}
             <Tabs.Screen
                 name="index"
                 options={{
@@ -28,27 +39,35 @@ export default function TabLayout() {
                 }}
             />
 
-            {/* 2. Створити */}
+            {/*  пошук (може реалізую, якщо буде час) */}
+            <Tabs.Screen
+                name="search"
+                options={{
+                    href: null, // Приховує з меню, якщо файлу немає
+                }}
+            />
+
+            {/* створити */}
             <Tabs.Screen
                 name="create"
                 options={{
-                    tabBarIcon: ({ color }) => <MaterialIcons name="add-circle-outline" size={28} color={color} />,
+                    tabBarIcon: ({ color }) => <MaterialIcons name="add-circle-outline" size={30} color={color} />,
                 }}
             />
 
-            {/* 3. Сповіщення */}
+            {/* сповіщення */}
             <Tabs.Screen
                 name="notifications"
                 options={{
-                    tabBarIcon: ({ color }) => <MaterialIcons name="notifications-none" size={28} color={color} />,
+                    tabBarIcon: ({ color }) => <MaterialIcons name="notifications-none" size={30} color={color} />,
                 }}
             />
 
-            {/* 4. Профіль */}
+            {/* профіль */}
             <Tabs.Screen
                 name="profile"
                 options={{
-                    tabBarIcon: ({ color }) => <MaterialIcons name="person-outline" size={28} color={color} />,
+                    tabBarIcon: ({ color }) => <MaterialIcons name="person-outline" size={30} color={color} />,
                 }}
             />
         </Tabs>
