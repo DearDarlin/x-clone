@@ -72,7 +72,6 @@ const styles = StyleSheet.create({
         width: 76,
         height: 76,
         borderRadius: 38,
-        // 🔥 ЗМІНА: Напівпрозорий фон для фото
         backgroundColor: 'rgba(255, 255, 255, 0.1)'
     },
     username: {
@@ -90,7 +89,6 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         borderWidth: 2,
-        // 🔥 ЗМІНА: Чорна обводка
         borderColor: '#000000'
     },
 });
