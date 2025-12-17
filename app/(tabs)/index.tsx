@@ -3,22 +3,24 @@ import { useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { COLORS } from '@/constants/theme';
 import Post from '../../components/Post';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import StoriesSection from '../../components/StoriesSection';
+import { ScreenWrapper } from '@/components/ScreenWrapper';
 
 export default function Feed() {
     const posts = useQuery(api.posts.get);
 
     if (posts === undefined) {
         return (
-            <View style={[styles.container, { justifyContent: 'center' }]}>
-                <ActivityIndicator size="large" color="#1DA1F2" />
-            </View>
+            <ScreenWrapper>
+                <View style={[styles.container, { justifyContent: 'center' }]}>
+                    <ActivityIndicator size="large" color="#1DA1F2" />
+                </View>
+            </ScreenWrapper>
         );
     }
 
     return (
-        <SafeAreaView style={styles.container} edges={['top']}>
+        <ScreenWrapper>
             <FlatList
                 data={posts}
                 keyExtractor={(item) => item._id}
@@ -34,13 +36,12 @@ export default function Feed() {
 
                 contentContainerStyle={{ paddingBottom: 20 }}
             />
-        </SafeAreaView>
+        </ScreenWrapper>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#000000',
     },
 });

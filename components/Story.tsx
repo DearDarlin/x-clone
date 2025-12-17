@@ -5,7 +5,7 @@ import { COLORS } from "@/constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 
 export default function Story({ item }: { item: any }) {
-    // Якщо це "Моя історія" — показуємо без градієнта
+
     if (item.isMyStory) {
         return (
             <TouchableOpacity style={styles.container}>
@@ -20,22 +20,14 @@ export default function Story({ item }: { item: any }) {
         );
     }
 
-    // Якщо це чужа історія — показуємо ГРАДІЄНТНИЙ БОРДЕР
     return (
         <TouchableOpacity style={styles.container}>
             <LinearGradient
-                // 🔥 ТУТ КОЛЬОРИ ГРАДІЄНТА
-                // Срібний/Монохромний ефект:
                 colors={['#ffffff', '#808080', '#202020']}
-
-                // Якщо захочеш кольоровий (Instagram-style), розкоментуй це:
-                // colors={['#F58529', '#DD2A7B', '#8134AF', '#515BD4']}
-
                 start={{ x: 0.1, y: 0.1 }}
                 end={{ x: 1, y: 1 }}
                 style={styles.gradientBorder}
             >
-                {/* Цей View робить "відступ" між градієнтом і фото */}
                 <View style={styles.innerContainer}>
                     <Image source={{ uri: item.img }} style={styles.image} contentFit="cover" />
                 </View>
@@ -52,7 +44,7 @@ const styles = StyleSheet.create({
         marginRight: 15,
         width: 90
     },
-    // Це зовнішнє кільце (градієнт)
+
     gradientBorder: {
         width: 88,
         height: 88,
@@ -61,16 +53,14 @@ const styles = StyleSheet.create({
         alignItems: "center",
         marginBottom: 5,
     },
-    // Це прошарок (чорний фон), щоб відділити фото від рамки
     innerContainer: {
-        width: 82,      // Трохи менше за градієнт (різниця = товщина рамки)
+        width: 82,
         height: 82,
         borderRadius: 41,
-        backgroundColor: COLORS.background, // 🔥 Колір фону додатку (щоб виглядало як кільце)
+        backgroundColor: '#000000',
         justifyContent: "center",
         alignItems: "center",
     },
-    // Контейнер для "Моєї історії" (без градієнта)
     noBorderContainer: {
         width: 88,
         height: 88,
@@ -79,10 +69,11 @@ const styles = StyleSheet.create({
         marginBottom: 5,
     },
     image: {
-        width: 76,      // Фото ще трохи менше
+        width: 76,
         height: 76,
         borderRadius: 38,
-        backgroundColor: COLORS.surface
+        // 🔥 ЗМІНА: Напівпрозорий фон для фото
+        backgroundColor: 'rgba(255, 255, 255, 0.1)'
     },
     username: {
         color: COLORS.white,
@@ -99,6 +90,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         borderWidth: 2,
-        borderColor: COLORS.background
+        // 🔥 ЗМІНА: Чорна обводка
+        borderColor: '#000000'
     },
 });
