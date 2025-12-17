@@ -6,6 +6,7 @@ import { Link } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '@/constants/theme';
 import { formatDistanceToNow } from 'date-fns';
+import { Href } from 'expo-router';
 
 interface NotificationProps {
   notification: {
@@ -27,7 +28,8 @@ export function Notification({ notification }: NotificationProps) {
   return (
     <View style={styles.notificationItem}>
       <View style={styles.notificationContent}>
-        <Link href={`/user/${notification.sender._id}`} asChild>
+        <Link 
+          href={`/user/${notification.sender._id}` as Href} asChild>
           <TouchableOpacity style={styles.avatarContainer}>
             <Image
               source={notification.sender.image}
@@ -48,7 +50,7 @@ export function Notification({ notification }: NotificationProps) {
         </Link>
 
         <View style={styles.notificationInfo}>
-          <Link href={`/user/${notification.sender._id}`} asChild>
+          <Link href={`/user/${notification.sender._id}` as Href} asChild>
             <TouchableOpacity>
               <Text style={styles.username}>{notification.sender.username}</Text>
             </TouchableOpacity>

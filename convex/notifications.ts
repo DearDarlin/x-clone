@@ -14,16 +14,27 @@ export const getNotifications = query({
 
     const notificationsWithInfo = await Promise.all(
       notifications.map(async (notification) => {
-        const sender = (await ctx.db.get(notification.senderId))!;
+        const sender = await ctx.db.get(notification.senderId);
+        // якщо отправитель видалив акаунт — ігноруємо
+        if (!sender) return null;
+
         let post = null;
         let comment = null;
 
         if (notification.postId) {
           post = await ctx.db.get(notification.postId);
+
+          // якщо це лайк або комент, але пост видалено — ігноруємо сповіщення
+          if (!post && (notification.type === 'like' || notification.type === 'comment')) {
+            return null;
+          }
         }
 
         if (notification.type === 'comment' && notification.commentId) {
           comment = await ctx.db.get(notification.commentId);
+
+          // якщо коментар удалили — повертаємо null, щоб приховати сповіщення
+          if (!comment) return null;
         }
 
         return {
@@ -39,6 +50,6 @@ export const getNotifications = query({
       })
     );
 
-    return notificationsWithInfo;
+    return notificationsWithInfo.filter((n) => n !== null);
   },
 });
