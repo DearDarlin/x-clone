@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { getAuthenticatedUser } from "./users";
 
 // добавлено query 
 export const get = query({
@@ -185,4 +186,25 @@ export const deletePost = mutation({
             posts: Math.max(0, (user.posts || 0) - 1),
         });
     },
+});
+
+// пошук постів через користувача
+export const getPostsByUser = query({
+  args: {
+    userId: v.optional(v.id("users")),
+  },
+  handler: async (ctx, args) => {
+    const user = args.userId
+      ? await ctx.db.get(args.userId)
+      : await getAuthenticatedUser(ctx);
+ 
+    if (!user) throw new Error("User not found");
+ 
+    const posts = await ctx.db
+      .query("posts")
+      .withIndex("by_user", (q) => q.eq("userId", args.userId || user._id))
+      .collect();
+ 
+    return posts;
+  },
 });
