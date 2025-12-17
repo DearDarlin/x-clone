@@ -5,7 +5,7 @@ import { api } from '@/convex/_generated/api';
 import { Loader } from '@/components/Loader';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '@/constants/theme';
-
+import { Notification } from '@/components/Notification';
 
 export default function NotificationsScreen() {
   const { isAuthenticated } = useConvexAuth();
@@ -20,6 +20,13 @@ export default function NotificationsScreen() {
         <Text style={styles.headerTitle}>Notifications</Text>
       </View>
 
+      <FlatList
+        data={notifications}
+        renderItem={({ item }) => <Notification notification={item} />}
+        keyExtractor={(item) => item._id}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.listContainer}
+      ></FlatList>
     </View>
   );
 }
