@@ -5,6 +5,7 @@ import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
 import { Image } from 'expo-image';
+import { Linking } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
 
@@ -75,7 +76,13 @@ export default function LoginScreen() {
                     </TouchableOpacity>
 
                     <Text style={styles.termsText}>
-                        Продовжуючи, ви погоджуєтесь з нашими Умовами та Політикою конфіденційності.
+                        Продовжуючи, ви погоджуєтесь з нашими{' '}
+                        <Text
+                            style={{ fontWeight: 'bold', textDecorationLine: 'underline' }}
+                            onPress={() => Linking.openURL('https://x.com/tos')}
+                        >
+                            Умовами та Політикою конфіденційності.
+                        </Text>
                     </Text>
                 </View>
             </SafeAreaView>

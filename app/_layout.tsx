@@ -6,9 +6,9 @@ import * as WebBrowser from 'expo-web-browser';
 import { Platform } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import InitialLayout from '../components/InitialLayout';
-// import { useFonts } from 'expo-font'; // закоментував
+import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 
 WebBrowser.maybeCompleteAuthSession();
 SplashScreen.preventAutoHideAsync();
@@ -43,31 +43,24 @@ if (!publishableKey) {
 }
 
 export default function RootLayout() {
-  // нема файлів, тому закоментував
-  // замість useFonts , просто кажемо тіпа, що все "завантажено" (loaded = true).
+  
+  const [fontsLoaded] = useFonts({
+    'JetBrainsMono-Medium':require('../assets/fonts/JetBrainsMono-Medium.ttf'),
+    'SpaceMono-Regular':require('../assets/fonts/SpaceMono-Regular.ttf')
+  })
 
-  /* const [loaded] = useFonts({
-    'SpaceMono': require('../assets/fonts/SpaceMono-Regular.ttf'), - це би мало таке бути 
-  });
-  */
+  const OnLayoutRootView = useCallback(async ()=> {
+    if(fontsLoaded) await SplashScreen.hideAsync();
+  },[fontsLoaded]
+)
 
-  const loaded = true; //  тимчасово true, щоб додаток працював без шрифтів
-
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
-
-  if (!loaded) {
-    return null;
-  }
+if(!fontsLoaded) return null
 
   return (
     <ClerkProvider tokenCache={tokenCache} publishableKey={publishableKey}>
       <ClerkLoaded>
         <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
-          <SafeAreaProvider>
+          <SafeAreaProvider onLayout={OnLayoutRootView}>
             <InitialLayout />
           </SafeAreaProvider>
         </ConvexProviderWithClerk>
