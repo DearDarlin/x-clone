@@ -2,16 +2,11 @@ import { COLORS } from "@/constants/theme";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
-    box:{
-
-    },
 
     header:{
         width:'100%',
         alignItems:'center',
         flexDirection:'row',
-        backgroundColor:COLORS.grey,
-        marginTop:40,
         padding:5
     },
     avatar_image:{
@@ -35,7 +30,7 @@ export const styles = StyleSheet.create({
         alignItems:'center'
     },
     avatar_info_text:{
-        fontSize:13,
+        fontSize:15,
         color:COLORS.white
     },
 
@@ -43,7 +38,6 @@ export const styles = StyleSheet.create({
         alignItems:'center',
         flexDirection:'row',
         justifyContent:'center',
-        backgroundColor:COLORS.grey,
         padding:5
     },
     logout_button:{
@@ -78,23 +72,71 @@ export const styles = StyleSheet.create({
         fontSize:17
     },
 
-    posts:{
-        backgroundColor:COLORS.grey
-    },
     post_button:{
-        flex: 1 / 3,
-        aspectRatio: 1,
-        padding: 1,
+        marginTop:10,
+        marginLeft:10
     },
     post_image:{
-        flex: 1,
+        width:112,
+        height:112
     },
 
     bio:{
         fontSize:17,
         fontWeight:'bold',
         color:COLORS.white,
-        backgroundColor:COLORS.grey,
         paddingLeft:15
+    },
+
+
+    modal:{
+        flex:1,
+        backgroundColor:COLORS.white
+    },
+    
+    header_modal:{
+        backgroundColor:COLORS.background,
+        flexDirection:'row',
+        justifyContent:'space-between',
+        padding:7
+    },
+    header_text_modal:{
+        fontWeight:'bold',
+        fontSize:17,
+        color:COLORS.white
+    },
+
+    box_modal:{
+        alignSelf:'center',
+        padding:5,
+        marginTop:10
+    },
+    text_box_modal:{
+        fontSize:23,
+        fontWeight:'bold',
+        marginBottom:5,
+        alignSelf:'center'
+    },
+    textinput_box_modal:{
+        backgroundColor:COLORS.background,
+        borderRadius:5,
+        color:COLORS.white,
+        fontSize:15,
+        alignItems:'center',
+        justifyContent:'center'
+    },
+
+    button_modal:{
+        padding:9,
+        backgroundColor:COLORS.background,
+        borderRadius:5,
+        alignItems:'center',
+        alignSelf:'center',
+        marginTop:10
+    },
+    button_text_modal:{
+        fontSize:17,
+        fontWeight:'bold',
+        color:COLORS.white
     }
 })
