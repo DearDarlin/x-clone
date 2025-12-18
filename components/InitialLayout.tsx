@@ -12,18 +12,23 @@ export default function InitialLayout() {
     const router = useRouter();
 
     const createUser = useMutation(api.users.createUser);
+
     useEffect(() => {
         if (isSignedIn && user) {
+            const generatedUsername = user.username || user.primaryEmailAddress?.emailAddress.split('@')[0] || "user";
+
             createUser({
                 clerkId: user.id,
                 email: user.primaryEmailAddress?.emailAddress || "",
-                username: user.username || user.firstName || "User",
                 fullname: user.fullName || "User Name",
                 image: user.imageUrl,
                 bio: "Hey there!",
-            }).catch((err) => console.log("Sync skipped:", err));
+                username: generatedUsername,
+            }).catch((err) => {
+            });
         }
     }, [isSignedIn, user]);
+
     useEffect(() => {
         if (!isLoaded) return;
         const currentSegment = segments ? segments[0] : undefined;
@@ -40,6 +45,7 @@ export default function InitialLayout() {
             }
         }
     }, [isSignedIn, isLoaded, segments]);
+
     if (!isLoaded) {
         return (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'black' }}>

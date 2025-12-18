@@ -1,5 +1,4 @@
-import { query, mutation } from './_generated/server';
-import { v } from 'convex/values';
+import { query } from './_generated/server';
 import { getAuthenticatedUser } from './users';
 
 export const getNotifications = query({
@@ -41,7 +40,7 @@ export const getNotifications = query({
           ...notification,
           sender: {
             _id: sender._id,
-            username: sender.username,
+            username: sender.username || sender.email.split("@")[0],
             image: sender.image,
           },
           post,

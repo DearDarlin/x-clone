@@ -3,15 +3,19 @@ import { ConvexReactClient } from 'convex/react';
 import { ConvexProviderWithClerk } from 'convex/react-clerk';
 import * as SecureStore from 'expo-secure-store';
 import * as WebBrowser from 'expo-web-browser';
-import { Platform } from 'react-native';
+import { Platform, View, ActivityIndicator } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import InitialLayout from '../components/InitialLayout';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { useCallback, useEffect } from 'react';
+import { InitialProfileSetup } from "@/components/InitialProfileSetup";
+import { useQuery } from 'convex/react';
+import { api } from '@/convex/_generated/api';
 
 WebBrowser.maybeCompleteAuthSession();
-SplashScreen.preventAutoHideAsync();
+
+SplashScreen.preventAutoHideAsync().catch(() => { });
 
 const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
   unsavedChangesWarning: false,
@@ -20,16 +24,14 @@ const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
 const tokenCache = {
   async getToken(key: string) {
     try {
-      if (Platform.OS === 'web') return null;
-      return await SecureStore.getItemAsync(key);
+      return Platform.OS === 'web' ? null : await SecureStore.getItemAsync(key);
     } catch (err) {
       return null;
     }
   },
   async saveToken(key: string, value: string) {
     try {
-      if (Platform.OS === 'web') return;
-      return await SecureStore.setItemAsync(key, value);
+      return Platform.OS === 'web' ? undefined : await SecureStore.setItemAsync(key, value);
     } catch (err) {
       return;
     }
@@ -37,31 +39,55 @@ const tokenCache = {
 };
 
 const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
+if (!publishableKey) throw new Error('Missing Publishable Key');
 
-if (!publishableKey) {
-  throw new Error('Missing Publishable Key');
+function RootContent() {
+  const { isLoaded, isSignedIn, userId } = useAuth();
+  const user = useQuery(api.users.getUserByClerkId, userId ? { clerkId: userId } : 'skip');
+
+  if (!isLoaded) {
+    return <View style={{ flex: 1, backgroundColor: 'black' }} />;
+  }
+
+  if (!isSignedIn) {
+    return <InitialLayout />;
+  }
+  if (user === undefined) {
+    return (
+      <View style={{ flex: 1, backgroundColor: 'black', justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="#1DA1F2" />
+      </View>
+    );
+  }
+
+  if (user === null) {
+    return <InitialProfileSetup />;
+  }
+  return <InitialLayout />;
 }
 
 export default function RootLayout() {
-  
   const [fontsLoaded] = useFonts({
-    'JetBrainsMono-Medium':require('../assets/fonts/JetBrainsMono-Medium.ttf'),
-    'SpaceMono-Regular':require('../assets/fonts/SpaceMono-Regular.ttf')
-  })
+    'JetBrainsMono-Medium': require('../assets/fonts/JetBrainsMono-Medium.ttf'),
+    'SpaceMono-Regular': require('../assets/fonts/SpaceMono-Regular.ttf')
+  });
 
-  const OnLayoutRootView = useCallback(async ()=> {
-    if(fontsLoaded) await SplashScreen.hideAsync();
-  },[fontsLoaded]
-)
+  useEffect(() => {
+    if (fontsLoaded) {
+      SplashScreen.hideAsync().catch(console.warn);
+    }
+  }, [fontsLoaded]);
 
-if(!fontsLoaded) return null
+  if (!fontsLoaded) return null;
 
   return (
     <ClerkProvider tokenCache={tokenCache} publishableKey={publishableKey}>
       <ClerkLoaded>
         <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
-          <SafeAreaProvider onLayout={OnLayoutRootView}>
-            <InitialLayout />
+          <SafeAreaProvider>
+            <View style={{ flex: 1, backgroundColor: 'black' }}>
+              <RootContent />
+            </View>
           </SafeAreaProvider>
         </ConvexProviderWithClerk>
       </ClerkLoaded>

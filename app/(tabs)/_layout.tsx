@@ -1,7 +1,7 @@
-import { Tabs } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
-import { StyleSheet } from 'react-native';
 import { BlurView } from 'expo-blur';
+import { Tabs } from 'expo-router';
+import { StyleSheet } from 'react-native';
 
 export default function TabLayout() {
     return (
@@ -43,7 +43,7 @@ export default function TabLayout() {
             <Tabs.Screen
                 name="search"
                 options={{
-                    href: null, // Приховує з меню, якщо файлу немає
+                    href: null,
                 }}
             />
 
@@ -62,6 +62,16 @@ export default function TabLayout() {
                     tabBarIcon: ({ color }) => <MaterialIcons name="notifications-none" size={30} color={color} />,
                 }}
             />
+
+            {/* приховати bookmarks файл з табів, оскільки доступ через профіль */}
+            <Tabs.Screen
+                name="bookmarks"
+                options={{
+                    href: null,
+                }}
+            />
+
+
 
             {/* профіль */}
             <Tabs.Screen
