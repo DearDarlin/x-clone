@@ -1,9 +1,9 @@
-import { useAuth, useUser } from '@clerk/clerk-expo';
-import { useRouter, useSegments, Slot } from 'expo-router';
-import { useEffect } from 'react';
-import { View, ActivityIndicator } from 'react-native';
-import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
+import { useAuth, useUser } from '@clerk/clerk-expo';
+import { useMutation } from 'convex/react';
+import { Slot, useRouter, useSegments } from 'expo-router';
+import { useEffect } from 'react';
+import { ActivityIndicator, View } from 'react-native';
 
 export default function InitialLayout() {
     const { isLoaded, isSignedIn } = useAuth();
@@ -36,7 +36,7 @@ export default function InitialLayout() {
         console.log("NAV CHECK:", { isSignedIn, currentSegment });
 
         if (isSignedIn) {
-            if (currentSegment !== '(tabs)') {
+            if (currentSegment !== '(tabs)' && currentSegment !== 'user') {
                 router.replace('/(tabs)');
             }
         } else if (!isSignedIn) {

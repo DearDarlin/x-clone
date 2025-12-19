@@ -147,5 +147,24 @@ export const styles = StyleSheet.create({
         fontSize: 17,
         fontWeight: 'bold',
         color: 'black'
+    },
+
+    following_button:{
+        backgroundColor: '#44e7ecff',
+        paddingVertical: 8,
+        borderRadius: 8,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderWidth: 1,
+        borderColor: '#333',
+    },
+    unfollowing_button:{
+        backgroundColor: '#1f1f1f',
+        paddingVertical: 8,
+        borderRadius: 8,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderWidth: 1,
+        borderColor: '#333',
     }
 })
