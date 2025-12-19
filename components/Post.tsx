@@ -4,6 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useMutation, useQuery } from "convex/react";
 import { formatDistanceToNow } from "date-fns";
 import { Image } from "expo-image";
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Alert, Dimensions, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import ImageViewing from "react-native-image-viewing";
@@ -69,6 +70,21 @@ export default function Post({ post }: { post: any }) {
         ]);
     };
 
+    const router = useRouter();
+
+    const goToProfile = () => {
+  if (currentUser?._id === post.userId) {
+    router.push("/(tabs)/profile");
+  } else {
+    // Використовуємо об'єктний синтаксис
+    router.push({
+      pathname: "/user/[id]",
+      params: { id: String(post.userId) }
+    });
+    console.log('sended to user')
+  }
+};
+
     let timeAgo = "just now";
     try {
         timeAgo = formatDistanceToNow(new Date(post._creationTime), { addSuffix: true })
@@ -112,17 +128,18 @@ export default function Post({ post }: { post: any }) {
 
             <View style={styles.postHeader}>
                 <View style={styles.postHeaderLeft}>
-                    <Image
+                        <TouchableOpacity onPress={()=>goToProfile()}>
+                        <Image
                         source={post.author?.image ? { uri: post.author.image } : null}
                         style={styles.postAvatar}
-                        contentFit="cover"
-                    />
-                    <View>
+                        contentFit="cover"/>
+                        <View>
                         <Text style={styles.postUsername} numberOfLines={1}>
                             @{post.author?.username || "unknown"}
                         </Text>
                         <Text style={styles.timeAgo}>{timeAgo}</Text>
                     </View>
+                    </TouchableOpacity>
                 </View>
 
                 {isOwner ? (
