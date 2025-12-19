@@ -20,7 +20,7 @@ import * as ImagePicker from "expo-image-picker";
 import { Image } from "expo-image";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { ScreenWrapper } from "@/components/ScreenWrapper";
 
 export default function CreateScreen() {
     const router = useRouter();
@@ -91,7 +91,7 @@ export default function CreateScreen() {
 
     return (
         // SafeAreaView, що шапка не залізе на верх екрану
-        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.background }}>
+        <ScreenWrapper>
 
             {/*1. HEADER}
             {/* завжди доступний */}
@@ -197,6 +197,6 @@ export default function CreateScreen() {
                     </ScrollView>
                 </TouchableWithoutFeedback>
             </KeyboardAvoidingView>
-        </SafeAreaView>
+        </ScreenWrapper>
     );
 }

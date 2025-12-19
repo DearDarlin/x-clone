@@ -1,5 +1,6 @@
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server"; // додано квері
+import { mutation, query } from "./_generated/server";
+import { getAuthenticatedUser } from "./users";
 
 // добавлено query 
 export const get = query({
@@ -142,6 +143,19 @@ export const toggleLike = mutation({
             await ctx.db.patch(args.postId, {
                 likes: Math.max(0, (post.likes || 0) - 1),
             });
+
+            // розлайк, удаляєм сповіщення
+            const notification = await ctx.db
+                .query("notifications")
+                .withIndex("by_post", (q) => q.eq("postId", args.postId))
+                .filter((q) => q.eq(q.field("senderId"), user._id))
+                .filter((q) => q.eq(q.field("type"), "like"))
+                .first();
+
+            if (notification) {
+                await ctx.db.delete(notification._id);
+            }
+
         } else {
             // якщо нема - ставимо
             await ctx.db.insert("likes", {
@@ -211,6 +225,13 @@ export const deletePost = mutation({
             .collect();
         for (const bookmark of bookmarks) await ctx.db.delete(bookmark._id);
 
+        // видалення сповіщень
+        const notifications = await ctx.db
+            .query("notifications")
+            .withIndex("by_post", (q) => q.eq("postId", args.postId))
+            .collect();
+        for (const notification of notifications) await ctx.db.delete(notification._id);
+
         // видалення файлу зі сховища
         if (post.storageId) {
             await ctx.storage.delete(post.storageId);
@@ -224,4 +245,25 @@ export const deletePost = mutation({
             posts: Math.max(0, (user.posts || 0) - 1),
         });
     },
+});
+
+// пошук постів через користувача
+export const getPostsByUser = query({
+  args: {
+    userId: v.optional(v.id("users")),
+  },
+  handler: async (ctx, args) => {
+    const user = args.userId
+      ? await ctx.db.get(args.userId)
+      : await getAuthenticatedUser(ctx);
+ 
+    if (!user) throw new Error("User not found");
+ 
+    const posts = await ctx.db
+      .query("posts")
+      .withIndex("by_user", (q) => q.eq("userId", args.userId || user._id))
+      .collect();
+ 
+    return posts;
+  },
 });

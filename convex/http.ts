@@ -1,14 +1,14 @@
 import { httpRouter } from "convex/server";
-import { httpAction } from "./_generated/server";
 import { Webhook } from "svix";
-import {api} from "../convex/_generated/api"
+import { api } from "../convex/_generated/api";
+import { httpAction } from "./_generated/server";
 
 const http = httpRouter();
 
 http.route({
   path: "/clerk-webhook",
   method: "POST",
-  handler: httpAction(async (ctx, request) => {
+  handler: httpAction(async (ctx, request): Promise<Response> => {
     const webhookSecret = process.env.CLERK_WEBHOOK_SECRET;
     if (!webhookSecret) {
       throw new Error("Missing CLERK_WEBHOOK_SECRET environment variable");
@@ -27,7 +27,7 @@ http.route({
     const payload = await request.json();
     const body = JSON.stringify(payload);
 
-     const wh = new Webhook(webhookSecret);
+    const wh = new Webhook(webhookSecret);
     let evt: any;
 
     try {
@@ -64,9 +64,8 @@ http.route({
       }
     }
 
-    return new Response("Webhook processed successfully", { status: 200 });
+    return new Response("Event processed", { status: 200 });
   }),
 });
 
 export default http;
-

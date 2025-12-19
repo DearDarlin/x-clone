@@ -1,12 +1,12 @@
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions, Alert } from "react-native";
-import { Image } from "expo-image";
-import { Ionicons } from "@expo/vector-icons";
 import { COLORS } from "@/constants/theme";
-import { formatDistanceToNow } from "date-fns";
-import { useState } from "react";
-import ImageViewing from "react-native-image-viewing";
-import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { Ionicons } from "@expo/vector-icons";
+import { useMutation, useQuery } from "convex/react";
+import { formatDistanceToNow } from "date-fns";
+import { Image } from "expo-image";
+import { useState } from "react";
+import { Alert, Dimensions, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import ImageViewing from "react-native-image-viewing";
 import CommentsModal from "./CommentsModal";
 import ReportModal from "./ReportModal";
 
@@ -119,7 +119,7 @@ export default function Post({ post }: { post: any }) {
                     />
                     <View>
                         <Text style={styles.postUsername} numberOfLines={1}>
-                            {post.author?.fullname || "Unknown User"}
+                            @{post.author?.username || "unknown"}
                         </Text>
                         <Text style={styles.timeAgo}>{timeAgo}</Text>
                     </View>
@@ -211,15 +211,16 @@ export default function Post({ post }: { post: any }) {
 
 const styles = StyleSheet.create({
     post: {
-        marginBottom: 16,
-        backgroundColor: COLORS.background,
+        marginBottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0)',
+        borderBottomWidth: 0,
+        borderBottomColor: 'transparent',
     },
-    // стилі для прихованого поста
     hiddenPost: {
         padding: 20,
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: COLORS.surface,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
         marginBottom: 16,
         gap: 8,
         minHeight: 150,
@@ -263,6 +264,7 @@ const styles = StyleSheet.create({
     postImage: {
         width: width,
         height: width,
+
     },
     postActions: {
         flexDirection: "row",
