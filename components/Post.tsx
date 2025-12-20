@@ -128,7 +128,7 @@ export default function Post({ post }: { post: any }) {
 
             <View style={styles.postHeader}>
                 <View style={styles.postHeaderLeft}>
-                        <TouchableOpacity onPress={()=>goToProfile()}>
+                        <TouchableOpacity onPress={()=>goToProfile()} style={styles.userRow}>
                         <Image
                         source={post.author?.image ? { uri: post.author.image } : null}
                         style={styles.postAvatar}
@@ -327,4 +327,8 @@ const styles = StyleSheet.create({
     moreButton: {
         padding: 6,
     },
+    userRow: {
+        flexDirection: "row",
+        alignItems: "center",
+},
 });
