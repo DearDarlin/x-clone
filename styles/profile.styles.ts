@@ -150,21 +150,27 @@ export const styles = StyleSheet.create({
     },
 
     following_button:{
-        backgroundColor: '#44e7ecff',
+        backgroundColor: '#269094ff',
         paddingVertical: 8,
         borderRadius: 8,
         alignItems: 'center',
         justifyContent: 'center',
-        borderWidth: 1,
+        borderWidth: 2,
         borderColor: '#333',
+        padding:12,
+        paddingLeft:50,
+        paddingRight:50,
     },
     unfollowing_button:{
-        backgroundColor: '#1f1f1f',
+        backgroundColor: '#69797dff',
         paddingVertical: 8,
         borderRadius: 8,
         alignItems: 'center',
         justifyContent: 'center',
-        borderWidth: 1,
-        borderColor: '#333',
+        borderWidth: 2,
+        borderColor: '#030303ff',
+        padding:12,
+        paddingLeft:60,
+        paddingRight:60,
     }
 })

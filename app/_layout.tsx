@@ -3,7 +3,7 @@ import { ConvexReactClient } from 'convex/react';
 import { ConvexProviderWithClerk } from 'convex/react-clerk';
 import * as SecureStore from 'expo-secure-store';
 import * as WebBrowser from 'expo-web-browser';
-import { Platform, View, ActivityIndicator } from 'react-native';
+import { Platform, View, ActivityIndicator, StyleSheet } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import InitialLayout from '../components/InitialLayout';
 import { useFonts } from 'expo-font';
@@ -46,7 +46,7 @@ function RootContent() {
   const user = useQuery(api.users.getUserByClerkId, userId ? { clerkId: userId } : 'skip');
 
   if (!isLoaded) {
-    return <View style={{ flex: 1, backgroundColor: 'black' }} />;
+    return <View style={styles.fullscreen} />;
   }
 
   if (!isSignedIn) {
@@ -54,8 +54,8 @@ function RootContent() {
   }
   if (user === undefined) {
     return (
-      <View style={{ flex: 1, backgroundColor: 'black', justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" color="#1DA1F2" />
+      <View style={styles.center}>
+        <ActivityIndicator size="large" color={styles.loader.color}/>
       </View>
     );
   }
@@ -85,7 +85,7 @@ export default function RootLayout() {
       <ClerkLoaded>
         <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
           <SafeAreaProvider>
-            <View style={{ flex: 1, backgroundColor: 'black' }}>
+            <View style={styles.root}>
               <RootContent />
             </View>
           </SafeAreaProvider>
@@ -94,3 +94,27 @@ export default function RootLayout() {
     </ClerkProvider>
   );
 }
+
+
+const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+    backgroundColor: 'black',
+  },
+
+  fullscreen: {
+    flex: 1,
+    backgroundColor: 'black',
+  },
+
+  center: {
+    flex: 1,
+    backgroundColor: 'black',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  loader: {
+    color: '#1DA1F2',
+  },
+});
